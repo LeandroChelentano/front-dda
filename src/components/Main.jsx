@@ -108,9 +108,20 @@ export default function Main() {
   };
 
   const handleClientSave = async () => {
+    if (
+      !selectedClient.nombre ||
+      !selectedClient.apellido ||
+      !selectedClient.email ||
+      !selectedClient.ci
+    ) {
+      alert("Hay elementos en blanco");
+      return;
+    }
+
+    let req;
     if (selectedClientIdOnList === null) {
       //* new client
-      const req = await newCliente(selectedClient);
+      req = await newCliente(selectedClient);
       if (req.status !== 500) {
         const arr = clientes;
         arr.push(req);
@@ -119,7 +130,7 @@ export default function Main() {
       }
     } else {
       //* update client
-      const req = await updateCliente(selectedClientIdOnList, selectedClient);
+      req = await updateCliente(selectedClientIdOnList, selectedClient);
       if (req.status !== 500) {
         const arr = [];
         clientes.forEach((c) => {
@@ -129,34 +140,50 @@ export default function Main() {
         clearClients();
       }
     }
+
+    if (req.status === 500 || req.status === 400)
+      alert("El email y la cedula deben ser unicos entre los clientes.");
   };
 
   const handlePlanSave = async () => {
-    if (!selectedPlan.fecha) return;
+    if (
+      !selectedPlan.destino ||
+      !selectedPlan.fecha ||
+      !selectedPlan.modalidad ||
+      !selectedPlan.precio
+    ) {
+      alert("Hay elementos en blanco");
+      return;
+    }
 
     let fecha = selectedPlan.fecha.toString();
     selectedPlan.fecha = fecha;
 
-    if (selectedPlanIdOnList === null) {
-      //* new plan
-      const req = await newPlan(selectedPlan);
-      if (req.status !== 500 || req.status !== 400) {
-        const arr = planes;
-        arr.push(req);
-        setPlanes(arr);
-        clearPlanes();
+    let req;
+    try {
+      if (selectedPlanIdOnList === null) {
+        //* new plan
+        req = await newPlan(selectedPlan);
+        if (req.status !== 500 || req.status !== 400) {
+          const arr = planes;
+          arr.push(req);
+          setPlanes(arr);
+          clearPlanes();
+        }
+      } else {
+        //* update plan
+        req = await updatePlan(selectedPlanIdOnList, selectedPlan);
+        if (req.status !== 500 || req.status !== 400) {
+          const arr = [];
+          planes.forEach((p) => {
+            arr.push(p.id === selectedPlanIdOnList ? req : p);
+          });
+          setPlanes(arr);
+          clearPlanes();
+        }
       }
-    } else {
-      //* update plan
-      const req = await updatePlan(selectedPlanIdOnList, selectedPlan);
-      if (req.status !== 500 || req.status !== 400) {
-        const arr = [];
-        planes.forEach((p) => {
-          arr.push(p.id === selectedPlanIdOnList ? req : p);
-        });
-        setPlanes(arr);
-        clearPlanes();
-      }
+    } catch {
+      alert("No puedes añadir un plan con una fecha anterior a la actual.");
     }
   };
 
@@ -172,7 +199,7 @@ export default function Main() {
   };
 
   const getNotBoughtTravels = () => {
-    if (selectedClient === null) return [];
+    if (selectedClient?.id === undefined) return [];
 
     const arr = [];
     planes?.forEach((p) => {
@@ -189,6 +216,7 @@ export default function Main() {
     if (selectedClient === null || selectedUnactivePlan === null) return;
 
     const req = await assignPlan(selectedClientIdOnList, selectedUnactivePlan);
+    console.log(req);
     if (req.status !== 500) {
       const arr = [];
       clientes.forEach((c) => {
@@ -197,6 +225,9 @@ export default function Main() {
       setClientes(arr);
       clearClients();
     }
+
+    if (req.status === 500 || req.status === 400)
+      alert("Ha ocurrido un error.");
   };
 
   const handleUnassignPlan = async () => {
@@ -221,6 +252,9 @@ export default function Main() {
       setClientes(arr);
       clearClients();
     }
+
+    if (req.status === 500 || req.status === 400)
+      alert("Ha ocurrido un error.");
   };
 
   const modalidades = ["terrestre", "aereo", "maritimo"];
@@ -269,7 +303,7 @@ export default function Main() {
         </Box>
         <Box
           title={
-            selectedClientIdOnList !== null
+            selectedClient?.id !== undefined
               ? "Datos del Cliente"
               : "Nuevo Cliente"
           }
@@ -352,7 +386,7 @@ export default function Main() {
                   <td>
                     <input
                       type="checkbox"
-                      defaultChecked={selectedClient?.premium || false}
+                      checked={selectedClient?.premium || false}
                       onChange={(e) =>
                         setSelectedClient({
                           ...selectedClient,

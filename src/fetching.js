@@ -22,7 +22,7 @@ export const newCliente = (c) => {
       cedula: c.cedula,
       email: c.email,
       ci: c.ci,
-      is_premium: c.premium || false,
+      isPremium: c.premium,
     }),
   })
     .then((response) => response.json())
@@ -41,7 +41,7 @@ export const updateCliente = (id, c) => {
       cedula: c.cedula,
       email: c.email,
       ci: c.ci,
-      is_premium: c.premium || false,
+      isPremium: c.premium,
     }),
   })
     .then((response) => response.json())

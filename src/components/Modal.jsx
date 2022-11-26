@@ -3,8 +3,6 @@ import React, { useState } from "react";
 export default function Modal({ cliente, showing, setShowing }) {
   const [firstPlanAfterDate, setFirstPlanAfterDate] = useState(null);
 
-  console.log(cliente);
-
   const handleChange = (date) => {
     if (!cliente) return;
 
