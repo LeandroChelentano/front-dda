@@ -216,7 +216,6 @@ export default function Main() {
     if (selectedClient === null || selectedUnactivePlan === null) return;
 
     const req = await assignPlan(selectedClientIdOnList, selectedUnactivePlan);
-    console.log(req);
     if (req.status !== 500) {
       const arr = [];
       clientes.forEach((c) => {
@@ -406,6 +405,7 @@ export default function Main() {
           </footer>
         </Box>
         <Box title="Viajes del Cliente" w={300}>
+          <h3 className="innerTitle">Planes Comprados</h3>
           <select
             className="select"
             multiple={true}
@@ -424,6 +424,7 @@ export default function Main() {
           <footer>
             <button onClick={handleUnassignPlan}>Darse de baja</button>
           </footer>
+          <h3 className="innerTitle">Planes Disponibles</h3>
           <select
             className="select"
             multiple={true}

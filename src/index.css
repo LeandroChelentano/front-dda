@@ -220,3 +220,8 @@ input[type="number"] {
   display: inline;
   margin-right: 10px;
 }
+
+.innerTitle {
+  font-size: 1em;
+  text-align: left;
+}
