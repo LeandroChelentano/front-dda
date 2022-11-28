@@ -416,7 +416,9 @@ export default function Main() {
             {selectedClient?.viajes?.map((p) => {
               return (
                 <option key={p.id} value={p.id}>
-                  {p.destino} - {p?.fecha?.replaceAll("-", "/")}
+                  [${p.precio}
+                  {selectedClient?.premium ? " -20%" : ""}] {p.destino} -{" "}
+                  {p?.fecha?.replaceAll("-", "/")}
                 </option>
               );
             })}
@@ -435,7 +437,9 @@ export default function Main() {
             {getNotBoughtTravels().map((p) => {
               return (
                 <option key={p.id} value={p.id}>
-                  {p.destino} - {p?.fecha?.replaceAll("-", "/")}
+                  [${p.precio}
+                  {selectedClient?.premium ? " -20%" : ""}] {p.destino} -{" "}
+                  {p?.fecha?.replaceAll("-", "/")}
                 </option>
               );
             })}
